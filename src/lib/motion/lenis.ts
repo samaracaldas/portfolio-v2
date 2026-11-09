@@ -23,7 +23,10 @@ export function startSmoothScroll(): Cleanup {
 
   const lenis = new Lenis({
     autoRaf: false,
-    lerp: 0.1,
+    // Lenis damps with lambda = lerp * 60, so the page settles in ~ln(100) / (lerp * 60) s.
+    // 0.1 (the default) took ~0.77 s and felt sluggish; 0.22 settles in ~0.35 s:
+    // still smooth, but it follows the wheel right away.
+    lerp: 0.22,
     anchors: { offset: headerOffset() },
   });
   instance = lenis;

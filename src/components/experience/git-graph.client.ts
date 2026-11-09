@@ -238,10 +238,7 @@ function build(root: HTMLElement, prefs: MotionPrefs): Cleanup {
       );
       steps.push({
         at: commit.y - 12,
-        add: (tl, at) =>
-          tl
-            .fromTo(connector, { drawSVG: '0%' }, { drawSVG: '100%', duration: 24 }, at)
-            .fromTo(commit.row, { opacity: 0.3 }, { opacity: 1, duration: 24 }, at),
+        add: (tl, at) => tl.fromTo(connector, { drawSVG: '0%' }, { drawSVG: '100%', duration: 24 }, at),
       });
       popStep(svg('circle', { class: 'g-commit', cx: x, cy: commit.y, r: 4.5, ...stroke }, nodesLayer), commit.y);
     }
@@ -271,7 +268,9 @@ function build(root: HTMLElement, prefs: MotionPrefs): Cleanup {
 
     const tl = gsap.timeline({
       defaults: { ease: 'none' },
-      scrollTrigger: { trigger: root, start: 'top 65%', end: 'bottom 65%', scrub: 0.6 },
+      // scrub: true follows the (already Lenis-smoothed) scroll directly; a numeric
+      // scrub would stack a second delay on top and make the graph lag behind.
+      scrollTrigger: { trigger: root, start: 'top 65%', end: 'bottom 65%', scrub: true },
     });
     for (const step of steps.sort((a, b) => a.at - b.at)) step.add(tl, Math.max(0, step.at));
     tl.set({}, {}, height); // 1 timeline unit = 1px of the timeline's height

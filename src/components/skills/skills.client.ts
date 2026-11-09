@@ -71,10 +71,10 @@ async function initPhysics(root: HTMLElement, isDisposed: () => boolean): Promis
   const visibility = new IntersectionObserver(
     ([entry]) => {
       if (!entry) return;
-      if (entry.isIntersecting && entry.intersectionRatio >= 0.35) world.drop();
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.12) world.drop();
       world.setActive(entry.isIntersecting);
     },
-    { threshold: [0, 0.35] },
+    { threshold: [0, 0.12] },
   );
   visibility.observe(pit);
 

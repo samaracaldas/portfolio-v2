@@ -18,8 +18,7 @@ const { experience, locale } = Astro.props;
 
     <!--
       git-graph.client.ts draws an SVG graph in a left gutter of this wrapper.
-      Entries are not [data-reveal]: the graph handles their entrance, and
-      reveal transforms would throw off its measurements.
+      The entries themselves never animate in: they are always visible.
     -->
     <div class="graph-root" data-git-graph>
       <ol class="timeline" role="list">
@@ -33,7 +32,7 @@ const { experience, locale } = Astro.props;
       </ol>
     </div>
 
-    <div class="creds" data-reveal>
+    <div class="creds">
       <div class="creds__block">
         <h3 class="creds__title mono"><span class="accent" aria-hidden="true">// </span>{experience.certifications.title}</h3>
         <ul role="list">

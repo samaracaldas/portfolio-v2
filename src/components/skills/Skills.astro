@@ -46,7 +46,7 @@ const usedInText = (skill: Skill) =>
     <div class="pit" data-skills-pit>
       {
         categories.map((category) => (
-          <div class="group" data-reveal>
+          <div class="group">
             <h3 class="group__title mono">{skills.categories[category]}</h3>
             <ul class="group__list" role="list">
               {SKILLS.filter((s) => s.category === category).map((skill) => (
@@ -160,10 +160,6 @@ const usedInText = (skill: Skill) =>
 
   .pit.is-physics .group {
     display: block;
-    /* Undo any reveal transform: it would offset every tag. */
-    transform: none !important;
-    opacity: 1 !important;
-    visibility: visible !important;
   }
 
   .pit.is-physics .group__title {

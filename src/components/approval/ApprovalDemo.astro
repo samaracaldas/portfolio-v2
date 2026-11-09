@@ -16,7 +16,7 @@ const lastIndex = approval.steps.length - 1;
     <SectionHeading heading={approval} id="approval-title" />
 
     <!-- Static end state: the card rests in the last column. approval.client.ts animates it across. -->
-    <ol class="board" role="list" data-approval-board data-reveal>
+    <ol class="board" role="list" data-approval-board>
       {
         approval.steps.map((step, i) => (
           <li class="column" data-step={step.id}>

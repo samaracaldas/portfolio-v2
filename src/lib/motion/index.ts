@@ -1,15 +1,31 @@
 import { ScrollTrigger } from './gsap';
 import { initLangSwitch, restoreScroll } from './lang-switch';
-import { mountWhenNear } from './lazy';
+import { debounce, mountWhenNear } from './lazy';
 import { startSmoothScroll } from './lenis';
-import { createScope, onPageTeardown, type Scope } from './lifecycle';
+import { createScope, onPageTeardown, type Cleanup, type Scope } from './lifecycle';
 import { getMotionPrefs, onReducedMotionChange, type MotionPrefs } from './prefers';
-import { initReveals } from './reveal';
 
 export { getMotionPrefs, type MotionPrefs } from './prefers';
 
 let current: Scope | null = null;
 let restored = false;
+
+/**
+ * Lazy features change the page height after ScrollTrigger measured it
+ * (cards become collapsible, the skills pit switches to physics, the git
+ * graph adds its gutter, images and fonts load...). Stale trigger positions
+ * meant content stayed invisible until you scrolled past where it *used* to
+ * be. Re-measure whenever the document height changes.
+ */
+function refreshOnLayoutChange(): Cleanup {
+  const refresh = debounce(() => ScrollTrigger.refresh(), 120);
+  const observer = new ResizeObserver(refresh);
+  observer.observe(document.body);
+  return () => {
+    observer.disconnect();
+    refresh.cancel();
+  };
+}
 
 function start(prefs: MotionPrefs): Scope {
   const scope = createScope();
@@ -17,8 +33,8 @@ function start(prefs: MotionPrefs): Scope {
 
   if (prefs.tier !== 'static') {
     scope.add(startSmoothScroll());
-    scope.add(initReveals());
   }
+  scope.add(refreshOnLayoutChange());
   scope.add(initLangSwitch(prefs));
 
   // Section features get the prefs and decide themselves how much to do

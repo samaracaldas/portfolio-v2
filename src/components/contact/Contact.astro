@@ -23,7 +23,7 @@ const links = [
     <div class="layout__info">
       <SectionHeading heading={contact} id="contact-title" />
       <!-- Always-available, accessible way to reach me, independent of the terminal. -->
-      <ul class="links" role="list" data-reveal>
+      <ul class="links" role="list">
         {
           links.map((link) => (
             <li>
@@ -36,7 +36,7 @@ const links = [
         }
       </ul>
     </div>
-    <div data-reveal>
+    <div>
       <Terminal terminal={contact.terminal} responses={terminal} />
     </div>
   </div>

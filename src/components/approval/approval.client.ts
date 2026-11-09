@@ -124,7 +124,7 @@ export function mount(section: HTMLElement, prefs: MotionPrefs): Cleanup {
       visible = entry?.isIntersecting ?? false;
       if (visible) void loop();
     },
-    { threshold: 0.35 },
+    { threshold: 0.15 },
   );
   io.observe(section);
   scope.add(() => io.disconnect());

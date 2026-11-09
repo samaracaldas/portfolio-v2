@@ -1,10 +1,7 @@
-import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
 import { gsap } from '@/lib/motion/gsap';
 import { debounce, type Feature } from '@/lib/motion/lazy';
 import { createScope, listen, type Cleanup } from '@/lib/motion/lifecycle';
 import type { MotionPrefs } from '@/lib/motion/prefers';
-
-gsap.registerPlugin(ScrambleTextPlugin);
 
 /**
  * "How I work with AI": three review agents (points of light) scan the code
@@ -20,8 +17,7 @@ interface LineGeom {
   el: HTMLElement;
 }
 
-const SCAN_SPEED = 520; // px per second
-const SCRAMBLE = { chars: 'abcdefghijklmnopqrstuvwxyz<>=/{}', speed: 0.7 };
+const SCAN_SPEED = 1100; // px per second
 
 function measureLines(pre: HTMLElement): LineGeom[] {
   const preRect = pre.getBoundingClientRect();
@@ -58,7 +54,7 @@ function buildTimeline(root: HTMLElement): { tl: gsap.core.Timeline; cleanup: Cl
   reviews.forEach((review, i) => {
     const targetLine = Number(review.dataset.reviewLine);
     const color = getComputedStyle(review).getPropertyValue('--agent').trim();
-    const start = i * 0.9;
+    const start = i * 0.45;
 
     const agent = document.createElement('span');
     agent.className = 'ai-agent';
@@ -90,33 +86,41 @@ function buildTimeline(root: HTMLElement): { tl: gsap.core.Timeline; cleanup: Cl
     target.el.append(flash);
     created.push(flash);
 
-    tl.to(agent, { x: (target.x0 + target.x1) / 2, duration: 0.35 }, at)
-      .to(agent, { scale: 1.9, duration: 0.18, yoyo: true, repeat: 1, ease: 'power1.inOut' }, at + 0.35)
-      .fromTo(flash, { opacity: 0 }, { opacity: 0.16, duration: 0.2, yoyo: true, repeat: 1 }, at + 0.35);
+    tl.to(agent, { x: (target.x0 + target.x1) / 2, duration: 0.25 }, at)
+      .to(agent, { scale: 1.9, duration: 0.15, yoyo: true, repeat: 1, ease: 'power1.inOut' }, at + 0.25)
+      .fromTo(flash, { opacity: 0 }, { opacity: 0.16, duration: 0.15, yoyo: true, repeat: 1 }, at + 0.25);
 
-    // The review comment arrives. Opacity only (not visibility), so screen
-    // readers can always read the comments, animation or not.
-    const text = review.querySelector<HTMLElement>('.review__text');
-    tl.fromTo(review, { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.4, ease: 'power2.out' }, at + 0.55);
-    if (text) {
-      tl.to(text, { scrambleText: { text: text.textContent ?? '', ...SCRAMBLE }, duration: 1.1, ease: 'none' }, at + 0.55);
-    }
-    at += 1.7;
+    // The comments are always on screen and readable; the agent just lights
+    // up its own comment when it finds the problem.
+    tl.fromTo(
+      review,
+      // box-shadow only: it has no base style, so the comment's own border and
+      // background are never touched (before, during or after the pulse).
+      { boxShadow: `inset 0 0 0 1px rgba(0,0,0,0), 0 0 0px 0px rgba(0,0,0,0)` },
+      {
+        boxShadow: `inset 0 0 0 1px ${color}, 0 0 18px 0px ${color}`,
+        duration: 0.25,
+        yoyo: true,
+        repeat: 1,
+        ease: 'power1.inOut',
+      },
+      at + 0.25,
+    );
+    at += 0.75;
 
     // The agent that reviewed the fixable line also fixes it.
     const fixText = ins?.querySelector<HTMLElement>('[data-fix-text]') ?? ins;
     const isFixer = del !== null && ins !== null && fixText !== null && target.el.contains(del);
     if (isFixer) {
-      tl.to(del, { color: '#ef6f6c', textDecorationColor: 'rgba(239,111,108,0.6)', backgroundColor: 'rgba(239,111,108,0.07)', duration: 0.4 }, at)
-        .set(ins, { display: 'block' }, at + 0.3)
-        .fromTo(ins, { opacity: 0 }, { opacity: 1, duration: 0.2 }, at + 0.3)
-        .to(fixText, { scrambleText: { text: fixText.textContent ?? '', ...SCRAMBLE }, duration: 1.2, ease: 'none' }, at + 0.3)
-        .to(agent, { y: target.y + (ins.getBoundingClientRect().height || target.el.getBoundingClientRect().height / 2), duration: 0.3 }, at + 0.3);
-      at += 1.6;
+      tl.to(del, { color: '#ef6f6c', textDecorationColor: 'rgba(239,111,108,0.6)', backgroundColor: 'rgba(239,111,108,0.07)', duration: 0.3 }, at)
+        .set(ins, { display: 'block' }, at + 0.2)
+        .fromTo(ins, { opacity: 0, y: -6 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, at + 0.2)
+        .to(agent, { y: target.y + (ins.getBoundingClientRect().height || target.el.getBoundingClientRect().height / 2), duration: 0.3 }, at + 0.2);
+      at += 0.7;
     }
 
     // Done: drift off to the right and fade.
-    tl.to(agent, { x: '+=40', autoAlpha: 0, duration: 0.5, ease: 'power1.in' }, at);
+    tl.to(agent, { x: '+=40', autoAlpha: 0, duration: 0.4, ease: 'power1.in' }, at);
   });
 
   return {
@@ -155,7 +159,7 @@ export function mount(root: HTMLElement, prefs: MotionPrefs): Cleanup {
       current?.tl.play();
       if (replay) replay.hidden = false;
     },
-    { threshold: 0.6 },
+    { threshold: 0.3 },
   );
   if (code) io.observe(code);
   scope.add(() => io.disconnect());

@@ -16,7 +16,7 @@ const { ai } = Astro.props;
     <SectionHeading heading={ai} id="ai-title" />
 
     <div class="layout">
-      <div class="layout__code agents" data-reveal>
+      <div class="layout__code agents">
         <CodeBlock
           filename={AI_CODE.filename}
           lines={AI_CODE.lines}
@@ -43,7 +43,7 @@ const { ai } = Astro.props;
       <ul class="practices" role="list">
         {
           ai.practices.map((practice) => (
-            <li class="practice" data-reveal>
+            <li class="practice">
               <h3 class="practice__title">{practice.title}</h3>
               <p class="practice__text">{practice.text}</p>
             </li>

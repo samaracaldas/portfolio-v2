@@ -17,7 +17,7 @@ const { projects } = Astro.props;
     <ul class="grid" role="list">
       {
         PROJECTS.map((project, index) => (
-          <li data-reveal>
+          <li>
             <ProjectCard project={project} text={projects.items[project.id]} labels={projects.labels} index={index} />
           </li>
         ))
