@@ -1,0 +1,178 @@
+---
+import type { AiReview } from '@/i18n';
+
+interface Props {
+  filename: string;
+  replayLabel: string;
+  lines: readonly string[];
+  fix: { line: number; after: string };
+  reviews: AiReview[];
+  label: string;
+  fixLabel: string;
+}
+
+const { filename, lines, fix, reviews, label, fixLabel, replayLabel } = Astro.props;
+const reviewedLines = new Set(reviews.map((r) => r.line));
+// Indent kept outside the animated span (ScrambleText trims leading spaces).
+const fixIndent = /^\s*/.exec(fix.after)?.[0] ?? '';
+---
+
+<figure class="code" aria-label={label}>
+  <figcaption class="code__bar mono">
+    <span class="code__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="code__file">{filename}</span>
+    <button class="code__replay" type="button" hidden data-ai-replay>
+      <span aria-hidden="true">↻ </span>{replayLabel}
+    </button>
+  </figcaption>
+  <pre class="code__pre" data-ai-code><code>{
+    lines.map((line, i) => {
+      const n = i + 1;
+      const isFix = n === fix.line;
+      return (
+        <span class:list={['code__line', { 'is-reviewed': reviewedLines.has(n) }]} data-line={n}>
+          <span class="code__num" aria-hidden="true">{n}</span>
+          {isFix ? (
+            <span class="code__diff">
+              <del class="code__del code__text" data-fix-before>{line}</del>
+              <ins class="code__ins" data-fix-after aria-label={fixLabel}>{fixIndent}<span data-fix-text>{fix.after.slice(fixIndent.length)}</span></ins>
+            </span>
+          ) : (
+            <span class="code__text">{line}</span>
+          )}
+        </span>
+      );
+    })
+  }</code></pre>
+</figure>
+
+<style>
+  .code {
+    border: 1px solid var(--c-line-strong);
+    border-radius: var(--radius-lg);
+    background: var(--c-bg-sunken);
+    overflow: hidden;
+  }
+
+  .code__bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--c-line);
+    font-size: var(--fs-xs);
+    color: var(--c-muted);
+  }
+
+  .code__file {
+    flex: 1;
+  }
+
+  .code__replay {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--c-muted);
+    padding: 0.2em 0.6em;
+    border: 1px solid var(--c-line-strong);
+    border-radius: 999px;
+  }
+
+  .code__replay:hover {
+    color: var(--c-fg);
+    border-color: var(--c-accent);
+  }
+
+  .code__dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .code__dots i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--c-line-strong);
+  }
+
+  .code__pre {
+    position: relative;
+    isolation: isolate;
+    padding: var(--space-4) 0;
+    font-size: clamp(0.72rem, 0.65rem + 0.3vw, 0.875rem);
+    line-height: 1.9;
+    overflow-x: auto;
+  }
+
+  .code__line {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    padding-right: var(--space-4);
+  }
+
+  .code__line.is-reviewed {
+    background: linear-gradient(90deg, rgb(229 181 103 / 0.07), transparent 70%);
+  }
+
+  .code__num {
+    color: var(--c-faint);
+    text-align: right;
+    padding-right: var(--space-4);
+    user-select: none;
+  }
+
+  .code__diff {
+    display: grid;
+  }
+
+  .code__del {
+    color: var(--c-danger);
+    text-decoration: line-through;
+    text-decoration-color: rgb(239 111 108 / 0.5);
+    background: rgb(239 111 108 / 0.07);
+  }
+
+  .code__ins {
+    color: var(--c-ok);
+    text-decoration: none;
+    background: rgb(111 207 151 / 0.08);
+  }
+
+  /* Live mode (ai.client.ts): the diff starts as untouched code. */
+  .code:global(.is-live) .code__del {
+    color: inherit;
+    text-decoration-color: transparent;
+    background: none;
+  }
+
+  .code:global(.is-live) .code__ins {
+    display: none;
+  }
+
+  .code__pre :global(.ai-agent) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 9px;
+    height: 9px;
+    margin: -4.5px 0 0 -4.5px;
+    border-radius: 50%;
+    background: var(--agent);
+    box-shadow:
+      0 0 8px 2px var(--agent),
+      0 0 24px 6px color-mix(in srgb, var(--agent) 45%, transparent);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .code__line {
+    position: relative;
+  }
+
+  .code__line :global(.ai-flash) {
+    position: absolute;
+    inset: 0;
+    background: var(--agent);
+    opacity: 0;
+    pointer-events: none;
+  }
+</style>

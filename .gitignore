@@ -1,0 +1,12 @@
+dist/
+.astro/
+node_modules/
+.vercel/
+.env
+.env.*
+!.env.example
+.DS_Store
+npm-debug.log*
+
+# Local editor/agent tooling
+.claude/

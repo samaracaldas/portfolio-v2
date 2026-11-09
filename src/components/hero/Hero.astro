@@ -1,0 +1,146 @@
+---
+import type { HeroDict } from '@/i18n';
+
+interface Props {
+  hero: HeroDict;
+}
+
+const { hero } = Astro.props;
+---
+
+<section id="hero" class="hero" aria-labelledby="hero-title" data-hero>
+  <!-- hero.client.ts mounts the particle canvas here. The HTML below stays the accessible source of truth. -->
+  <div class="hero__stage" data-hero-stage aria-hidden="true"></div>
+
+  <div class="hero__content container">
+    <p class="hero__kicker mono"><span class="accent" aria-hidden="true">// </span>{hero.kicker}</p>
+    <h1 class="hero__name" id="hero-title">
+      <span data-hero-name>{hero.name}</span><span class="hero__caret accent" aria-hidden="true">_</span>
+    </h1>
+    <p class="hero__role mono">{hero.role}</p>
+    <p class="hero__tagline">{hero.tagline}</p>
+
+    <div class="hero__meta">
+      <p class="hero__cert chip">
+        <span class="hero__cert-dot" aria-hidden="true"></span>
+        {hero.certification.label} · <strong>{hero.certification.code}</strong>
+      </p>
+      <p class="hero__ctas mono">
+        <a href="#projects">{hero.ctas.work}</a>
+        <span aria-hidden="true">·</span>
+        <a href="#contact">{hero.ctas.contact}</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    align-items: center;
+    padding-block: calc(var(--header-h) + var(--space-7)) var(--space-8);
+    overflow: hidden;
+  }
+
+  .hero__stage {
+    position: absolute;
+    inset: 0;
+    z-index: var(--z-canvas);
+    /* Static backdrop: faint code grid. Replaced visually by the canvas in phase 3. */
+    background:
+      radial-gradient(60rem 30rem at 70% 40%, var(--c-accent-soft), transparent 70%),
+      linear-gradient(var(--c-line) 1px, transparent 1px) 0 0 / 100% 3.5rem;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+    opacity: 0.6;
+  }
+
+  .hero__stage :global(.hero__canvas) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    /* Particles fill the whole hero: no mask on the canvas itself. */
+  }
+
+
+  .hero__content {
+    position: relative;
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .hero__kicker {
+    color: var(--c-muted);
+    font-size: var(--fs-sm);
+  }
+
+  .hero__name {
+    font-size: var(--fs-display);
+    font-weight: 700;
+    line-height: var(--lh-tight);
+    letter-spacing: -0.055em;
+    margin-left: -0.04em;
+  }
+
+  .hero__caret {
+    display: inline-block;
+    animation: blink 1.1s steps(1, end) infinite;
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .hero__role {
+    color: var(--c-accent);
+    font-size: var(--fs-md);
+  }
+
+  .hero__tagline {
+    font-size: var(--fs-lg);
+    line-height: var(--lh-snug);
+    color: var(--c-fg-soft);
+    max-width: 34ch;
+    letter-spacing: -0.015em;
+  }
+
+  .hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-5);
+    margin-top: var(--space-5);
+  }
+
+  .hero__cert {
+    white-space: normal;
+  }
+
+  .hero__cert strong {
+    color: var(--c-fg);
+    font-weight: 600;
+  }
+
+  .hero__cert-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--c-azure);
+    flex: none;
+  }
+
+  .hero__ctas {
+    display: flex;
+    gap: var(--space-3);
+    font-size: var(--fs-sm);
+    color: var(--c-faint);
+  }
+
+  .hero__ctas a {
+    color: var(--c-fg);
+  }
+</style>

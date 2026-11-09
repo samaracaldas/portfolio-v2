@@ -1,0 +1,177 @@
+---
+import type { ContactDict, TerminalDict } from '@/i18n';
+
+interface Props {
+  terminal: ContactDict['terminal'];
+  responses: TerminalDict;
+}
+
+const { terminal, responses } = Astro.props;
+// Everything the interactive terminal needs, serialized for terminal.client.ts.
+const clientData = JSON.stringify({ ...responses, prompt: terminal.prompt, commands: terminal.commands, helpTitle: terminal.helpTitle });
+---
+
+<!--
+  Without JS: a static transcript of `help` (the links next to it are the real
+  way to reach me). terminal.client.ts turns it into a live prompt.
+-->
+<figure class="terminal mono" aria-label={terminal.label} data-terminal>
+  <div class="terminal__bar" aria-hidden="true"><i></i><i></i><i></i><span>samara.sh</span></div>
+  <div class="terminal__screen" data-terminal-screen>
+    <div class="terminal__log" data-terminal-output>
+      {terminal.welcome.map((line) => <p class="muted">{line}</p>)}
+      <p class="terminal__cmd"><span class="accent">{terminal.prompt}</span> help</p>
+      <p>{terminal.helpTitle}:</p>
+      <dl class="terminal__help">
+        {
+          terminal.commands.map((c) => (
+            <div>
+              <dt>{c.cmd}</dt>
+              <dd>{c.description}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+    <p class="terminal__cmd" aria-hidden="true" data-terminal-static-prompt>
+      <span class="accent">{terminal.prompt}</span> <span class="terminal__caret">▍</span>
+    </p>
+    <form class="terminal__form" hidden data-terminal-form>
+      <label class="accent" for="terminal-input">{terminal.prompt}<span class="visually-hidden"> {terminal.inputLabel}</span></label>
+      <input
+        id="terminal-input"
+        class="terminal__input"
+        type="text"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        enterkeyhint="send"
+      />
+    </form>
+  </div>
+  <script type="application/json" data-terminal-dict set:html={clientData} />
+</figure>
+
+<style>
+  .terminal {
+    border: 1px solid var(--c-line-strong);
+    border-radius: var(--radius-lg);
+    background: var(--c-bg-sunken);
+    overflow: hidden;
+    font-size: var(--fs-sm);
+  }
+
+  .terminal:focus-within {
+    border-color: var(--c-accent);
+  }
+
+  .terminal__bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  .terminal__bar i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--c-line-strong);
+  }
+
+  .terminal__bar span {
+    margin-left: var(--space-2);
+    font-size: var(--fs-xs);
+    color: var(--c-muted);
+  }
+
+  .terminal__screen {
+    padding: var(--space-5);
+    height: 24rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    cursor: text;
+  }
+
+  .terminal__log {
+    display: grid;
+    gap: var(--space-1);
+    align-content: start;
+  }
+
+  .terminal__log :global(p) {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .terminal__cmd {
+    margin-top: var(--space-3);
+  }
+
+  .terminal__log :global(.is-error) {
+    color: var(--c-danger);
+  }
+
+  .terminal__log :global(.is-ok) {
+    color: var(--c-ok);
+  }
+
+  .terminal__help {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .terminal__help div,
+  .terminal__log :global(.help-row) {
+    display: grid;
+    grid-template-columns: 9rem 1fr;
+    gap: var(--space-3);
+  }
+
+  .terminal__help dt {
+    color: var(--c-fg);
+  }
+
+  .terminal__help dd {
+    color: var(--c-muted);
+  }
+
+  .terminal__caret {
+    color: var(--c-accent);
+    animation: blink 1.1s steps(1, end) infinite;
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .terminal__form {
+    display: flex;
+    gap: 0.6ch;
+    margin-top: var(--space-3);
+  }
+
+  .terminal__form[hidden] {
+    display: none;
+  }
+
+  .terminal__input {
+    flex: 1;
+    min-width: 0;
+    background: none;
+    border: 0;
+    outline: none;
+    color: var(--c-fg);
+    caret-color: var(--c-accent);
+    font: inherit;
+    padding: 0;
+  }
+
+  /* Focus is shown on the whole terminal (.terminal:focus-within). */
+  .terminal__input:focus-visible {
+    outline: none;
+  }
+</style>

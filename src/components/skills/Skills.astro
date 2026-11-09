@@ -1,0 +1,193 @@
+---
+import SectionHeading from '@/components/global/SectionHeading.astro';
+import SkillTag from './SkillTag.astro';
+import { EXPERIENCE_IDS, type ExperienceId } from '@/content/shared/experience';
+import { PROJECTS } from '@/content/shared/projects';
+import { SKILLS, type Skill, type SkillCategory } from '@/content/shared/skills';
+import type { ExperienceDict, SkillsDict } from '@/i18n';
+
+interface Props {
+  skills: SkillsDict;
+  experience: ExperienceDict;
+}
+
+const { skills, experience } = Astro.props;
+const categories = Object.keys(skills.categories) as SkillCategory[];
+
+const isExperience = (id: string): id is ExperienceId => (EXPERIENCE_IDS as readonly string[]).includes(id);
+const nameOf = (id: Skill['usedIn'][number]) =>
+  isExperience(id) ? experience.items[id].short : (PROJECTS.find((p) => p.id === id)?.name ?? id);
+
+const usedInText = (skill: Skill) =>
+  skill.usedIn.length > 0
+    ? `${skills.usedInLabel}: ${skill.usedIn.map(nameOf).join(', ')}`
+    : `${skills.usedInLabel}: ${skills.notUsedYet}`;
+---
+
+<section id="skills" class="section" aria-labelledby="skills-title">
+  <div class="container" data-skills>
+    <SectionHeading heading={skills} id="skills-title" />
+
+    <div class="toolbar mono" aria-hidden="true">
+      <ul class="legend" role="list">
+        {
+          categories.map((category) => (
+            <li data-category={category}>
+              <span class="legend__dot" />
+              {skills.categories[category]}
+            </li>
+          ))
+        }
+      </ul>
+      <p class="readout" data-skills-readout-value>{skills.hint}</p>
+    </div>
+
+    <!-- With motion, skills.client.ts turns this into a Matter.js pit; the grouped lists stay for assistive tech. -->
+    <div class="pit" data-skills-pit>
+      {
+        categories.map((category) => (
+          <div class="group" data-reveal>
+            <h3 class="group__title mono">{skills.categories[category]}</h3>
+            <ul class="group__list" role="list">
+              {SKILLS.filter((s) => s.category === category).map((skill) => (
+                <SkillTag skill={skill} usedInText={usedInText(skill)} />
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ---- Toolbar: legend + "used in" readout ---- */
+
+  .toolbar {
+    display: none;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-3) var(--space-6);
+    margin-bottom: var(--space-4);
+    font-size: var(--fs-xs);
+    color: var(--c-muted);
+  }
+
+  :global(.js) .toolbar {
+    display: flex;
+  }
+
+  .legend {
+    display: none;
+    gap: var(--space-4);
+  }
+
+  .container:has(.pit.is-physics) .legend {
+    display: flex;
+  }
+
+  .legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+  }
+
+  .legend__dot {
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 50%;
+    background: var(--c-accent);
+  }
+
+  .legend [data-category='backend'] .legend__dot {
+    background: var(--lane-junior);
+  }
+
+  .legend [data-category='database'] .legend__dot {
+    background: var(--lane-estagio);
+  }
+
+  .legend [data-category='tools'] .legend__dot {
+    background: var(--c-warn);
+  }
+
+  .readout {
+    color: var(--c-fg-soft);
+    min-height: 1.6em;
+  }
+
+  /* ---- Static layout (no JS / reduced motion) ---- */
+
+  .pit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: var(--space-6);
+  }
+
+  .group {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+  }
+
+  .group__title {
+    font-size: var(--fs-xs);
+    font-weight: 400;
+    color: var(--c-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .group__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  /* ---- Physics layout: tags are absolutely placed, transforms come from Matter ---- */
+
+  .pit.is-physics {
+    display: block;
+    position: relative;
+    height: clamp(22rem, 62svh, 34rem);
+    overflow: hidden;
+    border: 1px dashed var(--c-line-strong);
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(ellipse 70% 40% at 50% 100%, var(--c-accent-soft), transparent 70%),
+      var(--c-bg-sunken);
+  }
+
+  .pit.is-physics .group {
+    display: block;
+    /* Undo any reveal transform: it would offset every tag. */
+    transform: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .pit.is-physics .group__title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .pit.is-physics :global(.skill) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: var(--fs-md);
+    padding: 0.6em 1.15em;
+    cursor: grab;
+    touch-action: none;
+    will-change: transform;
+  }
+
+  .pit.is-physics :global(.skill.is-dragging) {
+    cursor: grabbing;
+    z-index: 1;
+  }
+</style>

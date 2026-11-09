@@ -1,0 +1,149 @@
+html {
+  background: var(--c-bg);
+  scroll-padding-top: var(--header-h);
+}
+
+/* Native smooth anchor scrolling only when Lenis is off and motion is welcome. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.lenis) {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  background: var(--c-bg);
+  color: var(--c-fg);
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  font-feature-settings: 'ss01', 'cv11';
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--c-faint);
+  text-underline-offset: 0.2em;
+  transition: color var(--dur-fast) var(--ease-out), text-decoration-color var(--dur-fast) var(--ease-out);
+}
+
+a:hover {
+  color: var(--c-accent);
+  text-decoration-color: currentColor;
+}
+
+:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background: var(--c-accent);
+  color: var(--c-bg);
+}
+
+code,
+kbd,
+pre,
+.mono {
+  font-family: var(--font-mono);
+  font-feature-settings: normal;
+}
+
+main {
+  position: relative;
+  z-index: var(--z-content);
+}
+
+/* ---------- Section scaffolding ---------- */
+
+.section {
+  position: relative;
+  padding-block: var(--space-section);
+}
+
+.container {
+  width: min(100% - 2 * var(--gutter), var(--max-width));
+  margin-inline: auto;
+}
+
+.section-heading {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-7);
+  max-width: 48rem;
+}
+
+.section-heading__kicker {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--c-muted);
+  letter-spacing: 0.02em;
+}
+
+.section-heading__slashes {
+  color: var(--c-accent);
+}
+
+.section-heading__title {
+  font-size: var(--fs-xl);
+  font-weight: 650;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.035em;
+}
+
+.section-heading__intro {
+  color: var(--c-fg-soft);
+  font-size: var(--fs-md);
+  max-width: 40rem;
+}
+
+/* ---------- Shared bits ---------- */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.2em 0.65em;
+  border: 1px solid var(--c-line-strong);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--c-fg-soft);
+  white-space: nowrap;
+}
+
+.text-link {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+.text-link::after {
+  content: '↗';
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.text-link:hover::after {
+  transform: translate(2px, -2px);
+}
+
+/* ---------- Skill hover highlight (set by skills.client.ts) ---------- */
+
+[data-project],
+[data-experience] {
+  transition:
+    outline-color var(--dur) var(--ease-out),
+    box-shadow var(--dur) var(--ease-out);
+  outline: 1px solid transparent;
+  outline-offset: 6px;
+}
+
+.is-skill-match {
+  outline-color: var(--c-accent);
+  box-shadow: 0 0 0 6px var(--c-accent-soft);
+  border-radius: var(--radius-lg);
+}

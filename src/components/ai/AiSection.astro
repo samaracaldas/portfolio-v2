@@ -1,0 +1,143 @@
+---
+import SectionHeading from '@/components/global/SectionHeading.astro';
+import CodeBlock from './CodeBlock.astro';
+import { AI_CODE } from '@/content/shared/ai-code';
+import type { AiDict } from '@/i18n';
+
+interface Props {
+  ai: AiDict;
+}
+
+const { ai } = Astro.props;
+---
+
+<section id="ai" class="section" aria-labelledby="ai-title" data-ai>
+  <div class="container">
+    <SectionHeading heading={ai} id="ai-title" />
+
+    <div class="layout">
+      <div class="layout__code agents" data-reveal>
+        <CodeBlock
+          filename={AI_CODE.filename}
+          lines={AI_CODE.lines}
+          fix={AI_CODE.fix}
+          reviews={ai.reviews}
+          label={ai.codeLabel}
+          fixLabel={ai.fixLabel}
+          replayLabel={ai.replayLabel}
+        />
+        <h3 class="visually-hidden">{ai.reviewsTitle}</h3>
+        <ol class="reviews mono" role="list" data-ai-reviews>
+          {
+            ai.reviews.map((review, i) => (
+              <li class="review" data-review-line={review.line} data-agent={i} style={`--agent: var(--agent-${i})`}>
+                <span class="review__agent">{review.agent}</span>
+                <span class="review__line">L{review.line}</span>
+                <span class="review__text">{review.comment}</span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
+      <ul class="practices" role="list">
+        {
+          ai.practices.map((practice) => (
+            <li class="practice" data-reveal>
+              <h3 class="practice__title">{practice.title}</h3>
+              <p class="practice__text">{practice.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .layout {
+    display: grid;
+    gap: var(--space-7);
+    align-items: start;
+  }
+
+  @media (min-width: 60rem) {
+    .layout {
+      grid-template-columns: 1.35fr 1fr;
+    }
+  }
+
+  .agents {
+    --agent-0: var(--c-accent);
+    --agent-1: var(--c-warn);
+    --agent-2: var(--lane-estagio);
+  }
+
+  .layout__code {
+    display: grid;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+
+  .reviews {
+    display: grid;
+    gap: var(--space-2);
+    font-size: var(--fs-xs);
+  }
+
+  .review {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--c-line);
+    border-left: 2px solid var(--agent, var(--c-warn));
+    border-radius: var(--radius-sm);
+    background: var(--c-bg-raised);
+  }
+
+  .review__agent {
+    color: var(--agent, var(--c-warn));
+  }
+
+  .review__line {
+    color: var(--c-muted);
+  }
+
+  .review__text {
+    color: var(--c-fg-soft);
+  }
+
+  @media (max-width: 35rem) {
+    .review {
+      grid-template-columns: auto 1fr;
+    }
+
+    .review__text {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .practices {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .practice {
+    display: grid;
+    gap: var(--space-2);
+    padding-left: var(--space-4);
+    border-left: 1px solid var(--c-line-strong);
+  }
+
+  .practice__title {
+    font-size: var(--fs-md);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+
+  .practice__text {
+    color: var(--c-muted);
+    font-size: var(--fs-sm);
+  }
+</style>

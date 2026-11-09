@@ -1,0 +1,61 @@
+---
+import type { CaseStudy } from '@/i18n';
+
+interface Props {
+  study: CaseStudy;
+  labels: CaseStudy;
+}
+
+const { study, labels } = Astro.props;
+const keys = ['challenge', 'approach', 'decision', 'outcome'] as const;
+---
+
+<!-- Mini case study: four short blocks, read like a commit message body. -->
+<dl class="case">
+  {
+    keys.map((key, i) => (
+      <div class="case__item">
+        <dt class="case__label mono">
+          <span class="case__n" aria-hidden="true">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          {labels[key]}
+        </dt>
+        <dd class="case__text">{study[key]}</dd>
+      </div>
+    ))
+  }
+</dl>
+
+<style>
+  .case {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: var(--space-5) var(--space-6);
+    padding: var(--space-5) var(--space-3) var(--space-3);
+    border-top: 1px solid var(--c-line);
+  }
+
+  .case__item {
+    display: grid;
+    gap: var(--space-2);
+    align-content: start;
+  }
+
+  .case__label {
+    display: flex;
+    gap: var(--space-2);
+    font-size: var(--fs-xs);
+    color: var(--c-muted);
+    text-transform: lowercase;
+  }
+
+  .case__n {
+    color: var(--c-accent);
+  }
+
+  .case__text {
+    font-size: var(--fs-sm);
+    color: var(--c-fg-soft);
+  }
+</style>

@@ -1,0 +1,104 @@
+---
+import SectionHeading from '@/components/global/SectionHeading.astro';
+import ProposalCard from './ProposalCard.astro';
+import type { ApprovalDict } from '@/i18n';
+
+interface Props {
+  approval: ApprovalDict;
+}
+
+const { approval } = Astro.props;
+const lastIndex = approval.steps.length - 1;
+---
+
+<section id="approval" class="section" aria-labelledby="approval-title" data-approval>
+  <div class="container">
+    <SectionHeading heading={approval} id="approval-title" />
+
+    <!-- Static end state: the card rests in the last column. approval.client.ts animates it across. -->
+    <ol class="board" role="list" data-approval-board data-reveal>
+      {
+        approval.steps.map((step, i) => (
+          <li class="column" data-step={step.id}>
+            <p class="column__label mono">
+              <span class="column__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              {step.label}
+            </p>
+            <p class="column__desc">{step.description}</p>
+            <div class="column__slot" data-slot>
+              {i === lastIndex && <ProposalCard card={approval.card} tags={approval.tags} tagsLabel={approval.tagsLabel} />}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <p class="disclaimer mono">
+      <span aria-hidden="true">* </span>{approval.disclaimer}
+    </p>
+  </div>
+</section>
+
+<style>
+  .board {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 48rem) {
+    .board {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .column {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    border: 1px dashed var(--c-line-strong);
+    border-radius: var(--radius-lg);
+    min-height: 16rem;
+    transition:
+      border-color var(--dur) var(--ease-out),
+      background-color var(--dur) var(--ease-out);
+  }
+
+  .column:global(.is-active) {
+    border-style: solid;
+    border-color: var(--c-accent);
+    background: var(--c-accent-soft);
+  }
+
+  .column:global(.is-active)[data-step='approved'] {
+    border-color: var(--c-ok);
+    background: rgb(111 207 151 / 0.08);
+  }
+
+  .column__label {
+    display: flex;
+    gap: var(--space-2);
+    font-size: var(--fs-sm);
+    color: var(--c-fg);
+  }
+
+  .column__n {
+    color: var(--c-accent);
+  }
+
+  .column__desc {
+    font-size: var(--fs-sm);
+    color: var(--c-muted);
+  }
+
+  .column__slot {
+    align-self: end;
+    margin-top: var(--space-4);
+  }
+
+  .disclaimer {
+    margin-top: var(--space-4);
+    font-size: var(--fs-xs);
+    color: var(--c-muted);
+  }
+</style>

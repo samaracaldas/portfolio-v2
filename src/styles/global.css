@@ -1,0 +1,9 @@
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
+@import 'lenis/dist/lenis.css';
+
+@import './tokens.css';
+@import './reset.css';
+@import './base.css';
+@import './utilities.css';
+@import './reduced-motion.css';

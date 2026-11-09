@@ -1,0 +1,19 @@
+---
+import type { SectionHeading } from '@/i18n';
+
+interface Props {
+  heading: SectionHeading;
+  /** id of the <h2>, referenced by the section's aria-labelledby. */
+  id: string;
+}
+
+const { heading, id } = Astro.props;
+---
+
+<header class="section-heading">
+  <p class="section-heading__kicker" data-reveal>
+    <span class="section-heading__slashes" aria-hidden="true">// </span>{heading.kicker}
+  </p>
+  <h2 class="section-heading__title" id={id} data-reveal>{heading.title}</h2>
+  {heading.intro && <p class="section-heading__intro" data-reveal>{heading.intro}</p>}
+</header>

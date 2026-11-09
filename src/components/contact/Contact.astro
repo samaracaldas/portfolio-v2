@@ -1,0 +1,78 @@
+---
+import SectionHeading from '@/components/global/SectionHeading.astro';
+import Terminal from './Terminal.astro';
+import { PERSON } from '@/content/shared/links';
+import type { ContactDict, TerminalDict } from '@/i18n';
+
+interface Props {
+  contact: ContactDict;
+  terminal: TerminalDict;
+}
+
+const { contact, terminal } = Astro.props;
+
+const links = [
+  { label: contact.links.email, value: PERSON.email, href: `mailto:${PERSON.email}` },
+  { label: contact.links.github, value: `@${PERSON.githubHandle}`, href: PERSON.github },
+  { label: contact.links.linkedin, value: PERSON.linkedinHandle, href: PERSON.linkedin },
+];
+---
+
+<section id="contact" class="section" aria-labelledby="contact-title" data-contact>
+  <div class="container layout">
+    <div class="layout__info">
+      <SectionHeading heading={contact} id="contact-title" />
+      <!-- Always-available, accessible way to reach me, independent of the terminal. -->
+      <ul class="links" role="list" data-reveal>
+        {
+          links.map((link) => (
+            <li>
+              <span class="links__label mono">{link.label}</span>
+              <a class="links__value" href={link.href} rel="noopener">
+                {link.value}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <div data-reveal>
+      <Terminal terminal={contact.terminal} responses={terminal} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .layout {
+    display: grid;
+    gap: var(--space-7);
+    align-items: start;
+  }
+
+  @media (min-width: 60rem) {
+    .layout {
+      grid-template-columns: 1fr 1.15fr;
+    }
+  }
+
+  .links {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .links li {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .links__label {
+    font-size: var(--fs-xs);
+    color: var(--c-muted);
+  }
+
+  .links__value {
+    font-size: var(--fs-md);
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+</style>

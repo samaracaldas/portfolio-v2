@@ -1,0 +1,49 @@
+---
+import { localePath, otherLocale, type Locale, type SiteDict } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+  site: SiteDict;
+}
+
+const { locale, site } = Astro.props;
+const target = otherLocale(locale);
+---
+
+<!-- A real link; lib/motion/lang-switch.ts adds the ScrambleText transition on top. -->
+<a
+  class="lang-toggle mono"
+  href={localePath(target)}
+  hreflang={target === 'pt' ? 'pt-BR' : 'en'}
+  lang={target === 'pt' ? 'pt-BR' : 'en'}
+  data-lang-toggle
+>
+  <!-- Accessible name keeps the visible text first ("EN / PT"), then explains it. -->
+  <span class:list={{ active: locale === 'en' }}>EN</span>
+  <span class="sep">/</span>
+  <span class:list={{ active: locale === 'pt' }}>PT</span>
+  <span class="visually-hidden">: {site.a11y.switchLanguage}</span>
+</a>
+
+<style>
+  .lang-toggle {
+    display: inline-flex;
+    gap: 0.35em;
+    font-size: var(--fs-sm);
+    color: var(--c-muted);
+    text-decoration: none;
+    padding: var(--space-1) var(--space-2);
+  }
+
+  .lang-toggle:hover {
+    color: var(--c-fg-soft);
+  }
+
+  .active {
+    color: var(--c-fg);
+  }
+
+  .sep {
+    color: var(--c-faint);
+  }
+</style>

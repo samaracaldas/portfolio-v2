@@ -1,0 +1,76 @@
+---
+import type { ApprovalDict } from '@/i18n';
+
+interface Props {
+  card: ApprovalDict['card'];
+  tags: string[];
+  tagsLabel: string;
+}
+
+const { card, tags, tagsLabel } = Astro.props;
+---
+
+<article
+  class="proposal"
+  aria-label={`${card.id}: ${card.title}`}
+  data-proposal-card
+  data-statuses={JSON.stringify(card.statuses)}
+>
+  <p class="proposal__id mono">{card.id}</p>
+  <h3 class="proposal__title">{card.title}</h3>
+  <p class="proposal__owner mono">{card.owner}</p>
+  <p class="visually-hidden">{tagsLabel}:</p>
+  <ul class="proposal__tags" role="list" data-proposal-tags>
+    {tags.map((tag) => <li class="chip">#{tag}</li>)}
+  </ul>
+  <p class="proposal__status mono" data-proposal-status>
+    <span class="proposal__check" aria-hidden="true" data-status-icon>✓ </span><span data-status-text>{card.status}</span>
+  </p>
+</article>
+
+<style>
+  .proposal {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    border: 1px solid var(--c-line-strong);
+    border-radius: var(--radius);
+    background: var(--c-bg-raised);
+    box-shadow: 0 20px 40px -24px rgb(0 0 0 / 0.8);
+  }
+
+  .proposal__id,
+  .proposal__owner {
+    font-size: var(--fs-xs);
+    color: var(--c-muted);
+  }
+
+  .proposal__title {
+    font-size: var(--fs-base);
+    font-weight: 600;
+    line-height: var(--lh-snug);
+  }
+
+  .proposal__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    margin-top: var(--space-2);
+  }
+
+  .proposal__tags .chip {
+    border-color: var(--c-accent-soft);
+    color: var(--c-accent);
+  }
+
+  .proposal__status {
+    display: flex;
+    font-size: var(--fs-xs);
+    color: var(--c-ok);
+  }
+
+  .proposal__check {
+    display: inline-block;
+    white-space: pre;
+  }
+</style>

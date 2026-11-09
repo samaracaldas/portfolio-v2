@@ -1,0 +1,68 @@
+---
+import type { Skill } from '@/content/shared/skills';
+
+interface Props {
+  skill: Skill;
+  /** Localized "Used in: FinanceFlow, BNP (Pleno)" sentence. */
+  usedInText: string;
+}
+
+const { skill, usedInText } = Astro.props;
+---
+
+<li
+  class="skill mono"
+  data-skill={skill.id}
+  data-category={skill.category}
+  data-used-in={skill.usedIn.join(' ')}
+  data-used-in-label={usedInText}
+>
+  <span class="skill__dot" aria-hidden="true"></span>
+  {skill.label}
+  <span class="visually-hidden">({usedInText})</span>
+</li>
+
+<style>
+  .skill {
+    --cat: var(--c-accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55em;
+    padding: 0.55em 1.05em;
+    border: 1px solid var(--c-line-strong);
+    border-radius: 999px;
+    background: var(--c-bg-raised);
+    font-size: var(--fs-sm);
+    color: var(--c-fg);
+    white-space: nowrap;
+    user-select: none;
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out);
+  }
+
+  .skill[data-category='backend'] {
+    --cat: var(--lane-junior);
+  }
+
+  .skill[data-category='database'] {
+    --cat: var(--lane-estagio);
+  }
+
+  .skill[data-category='tools'] {
+    --cat: var(--c-warn);
+  }
+
+  .skill__dot {
+    width: 0.45em;
+    height: 0.45em;
+    border-radius: 50%;
+    background: var(--cat);
+    flex: none;
+  }
+
+  .skill:global(.is-active) {
+    border-color: var(--cat);
+    background: color-mix(in srgb, var(--cat) 12%, var(--c-bg-raised));
+  }
+</style>

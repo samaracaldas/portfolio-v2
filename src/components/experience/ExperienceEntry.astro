@@ -1,0 +1,110 @@
+---
+import CommitLog from './CommitLog.astro';
+import type { Experience } from '@/content/shared/experience';
+import { EXPERIENCES } from '@/content/shared/experience';
+import { formatMonth, type ExperienceDict, type ExperienceText, type Locale } from '@/i18n';
+
+interface Props {
+  item: Experience;
+  text: ExperienceText;
+  dict: ExperienceDict;
+  locale: Locale;
+}
+
+const { item, text, dict, locale } = Astro.props;
+const lane = item.branch.split('/')[0];
+const mergeTarget = item.mergesInto ? EXPERIENCES.find((e) => e.id === item.mergesInto) : undefined;
+const titleId = `exp-${item.id}`;
+---
+
+<article class="entry" aria-labelledby={titleId} data-experience={item.id} style={`--lane: var(--lane-${lane})`}>
+  <div class="entry__when mono">
+    <p>
+      <time datetime={item.start}>{formatMonth(item.start, locale)}</time>
+      {' – '}
+      {item.end ? <time datetime={item.end}>{formatMonth(item.end, locale)}</time> : <span class="accent">{dict.present}</span>}
+    </p>
+    <p class="muted">{text.location}</p>
+  </div>
+
+  <div class="entry__main">
+    <h3 class="entry__role" id={titleId} data-role>{text.role}</h3>
+    <p class="entry__company">{item.company}</p>
+    {text.context && <p class="entry__context">{text.context}</p>}
+    <ul class="entry__bullets" role="list">
+      {text.bullets.map((bullet) => <li>{bullet}</li>)}
+    </ul>
+    <CommitLog
+      branch={item.branch}
+      hashes={item.hashes}
+      messages={text.commits}
+      mergeLabel={mergeTarget ? `merge → ${mergeTarget.branch}` : undefined}
+    />
+  </div>
+</article>
+
+<style>
+  .entry {
+    display: grid;
+    gap: var(--space-4);
+    padding-block: var(--space-7);
+    border-top: 1px solid var(--c-line);
+  }
+
+  @media (min-width: 56rem) {
+    .entry {
+      grid-template-columns: 14rem 1fr;
+      gap: var(--space-7);
+    }
+  }
+
+  .entry__when {
+    font-size: var(--fs-sm);
+    color: var(--c-fg-soft);
+  }
+
+  .entry__main {
+    display: grid;
+    gap: var(--space-3);
+    max-width: 44rem;
+  }
+
+  .entry__role {
+    font-size: var(--fs-lg);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+    line-height: var(--lh-snug);
+  }
+
+  .entry__company {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    color: var(--lane);
+  }
+
+  .entry__context {
+    color: var(--c-muted);
+    font-size: var(--fs-sm);
+    margin-top: calc(-1 * var(--space-2));
+  }
+
+  .entry__bullets {
+    display: grid;
+    gap: var(--space-2);
+    color: var(--c-fg-soft);
+    margin-bottom: var(--space-4);
+  }
+
+  .entry__bullets li {
+    position: relative;
+    padding-left: 1.5em;
+  }
+
+  .entry__bullets li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--c-faint);
+    font-family: var(--font-mono);
+  }
+</style>

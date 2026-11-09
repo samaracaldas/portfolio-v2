@@ -1,0 +1,94 @@
+---
+import { Image } from 'astro:assets';
+import type { Project } from '@/content/shared/projects';
+import { PROJECT_IMAGES } from '@/content/shared/project-images';
+
+interface Props {
+  project: Project;
+  alt: string;
+  /** "live ✓" / "no ar ✓" */
+  status: string;
+}
+
+const { project, alt, status } = Astro.props;
+const lines = [`$ open ${project.id}`, `> stack: ${project.stack.join(' · ').toLowerCase()}`, `> status: ${status}`];
+---
+
+<!--
+  Screenshot + a terminal overlay shown on hover/focus. The overlay is
+  decorative (the stack and links are already in the card as real text);
+  projects.client.ts types its lines out, CSS alone shows it without JS.
+-->
+<div class="visual" data-visual>
+  <Image
+    class="visual__img"
+    src={PROJECT_IMAGES[project.id]}
+    alt={alt}
+    widths={[480, 800]}
+    sizes="(min-width: 60rem) 45vw, 100vw"
+    loading="lazy"
+    decoding="async"
+  />
+  <div class="visual__term mono" aria-hidden="true" data-term>
+    {lines.map((line, i) => <p class:list={{ accent: i === 0 }} data-term-line>{line}</p>)}
+  </div>
+</div>
+
+<style>
+  .visual {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--c-bg-sunken);
+    isolation: isolate;
+  }
+
+  .visual__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+
+  /* ---- Terminal overlay ---- */
+
+  .visual__term {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    align-content: end;
+    gap: 0.35em;
+    padding: clamp(0.9rem, 3%, 1.5rem);
+    font-size: clamp(0.72rem, 0.65rem + 0.3vw, 0.875rem);
+    color: var(--c-fg);
+    background: rgb(7 7 7 / 0.8);
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease-out);
+    pointer-events: none;
+  }
+
+  .visual__term p {
+    min-height: 1.5em;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  :global(.card:hover) .visual__term,
+  :global(.card:focus-within) .visual__term {
+    opacity: 1;
+  }
+
+  :global(.card:hover) .visual__img,
+  :global(.card:focus-within) .visual__img {
+    transform: scale(1.04);
+  }
+
+  /* Typing caret on the line currently being written (projects.client.ts). */
+  .visual__term :global(.is-typing)::after {
+    content: '▍';
+    color: var(--c-accent);
+    margin-left: 0.1em;
+  }
+</style>

@@ -1,0 +1,53 @@
+---
+import '@/styles/global.css';
+import Grain from '@/components/global/Grain.astro';
+import Preloader from '@/components/global/Preloader.astro';
+import Header from '@/components/global/Header.astro';
+import Footer from '@/components/global/Footer.astro';
+import SkipLink from '@/components/global/SkipLink.astro';
+import Seo from '@/components/global/Seo.astro';
+import { getDictionary, type Locale } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const dict = getDictionary(locale);
+---
+
+<!doctype html>
+<html lang={dict.site.htmlLang} data-locale={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <Seo locale={locale} site={dict.site} />
+    <meta name="color-scheme" content="dark" />
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        root.classList.add('js');
+        // Coming back from a language switch: no preloader, straight to the content.
+        try {
+          if (sessionStorage.getItem('sc:restore')) root.classList.add('skip-preloader');
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <SkipLink label={dict.site.a11y.skipToContent} />
+    <Header locale={locale} site={dict.site} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer site={dict.site} />
+    <Grain />
+    <Preloader preloader={dict.site.preloader} />
+    <script>
+      import { boot } from '@/lib/motion';
+      boot();
+    </script>
+  </body>
+</html>

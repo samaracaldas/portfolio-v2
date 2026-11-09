@@ -1,0 +1,79 @@
+---
+interface Props {
+  branch: string;
+  hashes: string[];
+  messages: string[];
+  /** Shown on the last commit when this branch merges somewhere. */
+  mergeLabel?: string | undefined;
+}
+
+const { branch, hashes, messages, mergeLabel } = Astro.props;
+// Oldest first, matching the timeline (`git log --reverse`).
+const commits = messages.map((message, i) => ({ message, hash: hashes[i] ?? '0000000' }));
+const last = commits.length - 1;
+---
+
+<div class="log mono">
+  <p class="log__branch"><span aria-hidden="true">⎇ </span>{branch}</p>
+  <ol class="log__list" role="list">
+    {
+      commits.map((commit, i) => (
+        <li class="log__commit" data-commit={commit.hash}>
+          <span class="log__node" aria-hidden="true" />
+          <span class="log__hash">{commit.hash}</span>
+          <span class="log__message">{commit.message}</span>
+          {i === last && mergeLabel && <span class="log__merge">↳ {mergeLabel}</span>}
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<style>
+  .log {
+    font-size: var(--fs-xs);
+    color: var(--c-muted);
+  }
+
+  .log__branch {
+    color: var(--lane);
+    margin-bottom: var(--space-3);
+  }
+
+  .log__list {
+    display: grid;
+    gap: var(--space-2);
+    border-left: 1px solid var(--c-line-strong);
+    padding-left: var(--space-4);
+  }
+
+  .log__commit {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: var(--space-2);
+  }
+
+  .log__node {
+    position: absolute;
+    left: calc(-1 * var(--space-4) - 4px);
+    top: 0.45em;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--c-bg);
+    border: 1.5px solid var(--lane);
+  }
+
+  .log__hash {
+    color: var(--c-warn);
+  }
+
+  .log__message {
+    color: var(--c-fg-soft);
+  }
+
+  .log__merge {
+    color: var(--lane-pleno);
+  }
+</style>

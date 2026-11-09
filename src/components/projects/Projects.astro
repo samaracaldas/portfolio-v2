@@ -1,0 +1,43 @@
+---
+import SectionHeading from '@/components/global/SectionHeading.astro';
+import ProjectCard from './ProjectCard.astro';
+import { PROJECTS } from '@/content/shared/projects';
+import type { ProjectsDict } from '@/i18n';
+
+interface Props {
+  projects: ProjectsDict;
+}
+
+const { projects } = Astro.props;
+---
+
+<section id="projects" class="section" aria-labelledby="projects-title" data-projects>
+  <div class="container">
+    <SectionHeading heading={projects} id="projects-title" />
+    <ul class="grid" role="list">
+      {
+        PROJECTS.map((project, index) => (
+          <li data-reveal>
+            <ProjectCard project={project} text={projects.items[project.id]} labels={projects.labels} index={index} />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr));
+    gap: var(--space-5);
+  }
+
+  .grid > li {
+    display: grid;
+  }
+
+  .grid > li:global(.is-expanded) {
+    grid-column: 1 / -1;
+  }
+</style>

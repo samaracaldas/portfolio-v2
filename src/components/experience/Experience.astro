@@ -1,0 +1,190 @@
+---
+import SectionHeading from '@/components/global/SectionHeading.astro';
+import ExperienceEntry from './ExperienceEntry.astro';
+import { EXPERIENCES } from '@/content/shared/experience';
+import type { ExperienceDict, Locale } from '@/i18n';
+
+interface Props {
+  experience: ExperienceDict;
+  locale: Locale;
+}
+
+const { experience, locale } = Astro.props;
+---
+
+<section id="experience" class="section" aria-labelledby="experience-title">
+  <div class="container">
+    <SectionHeading heading={experience} id="experience-title" />
+
+    <!--
+      git-graph.client.ts draws an SVG graph in a left gutter of this wrapper.
+      Entries are not [data-reveal]: the graph handles their entrance, and
+      reveal transforms would throw off its measurements.
+    -->
+    <div class="graph-root" data-git-graph>
+      <ol class="timeline" role="list">
+        {
+          EXPERIENCES.map((item) => (
+            <li>
+              <ExperienceEntry item={item} text={experience.items[item.id]} dict={experience} locale={locale} />
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <div class="creds" data-reveal>
+      <div class="creds__block">
+        <h3 class="creds__title mono"><span class="accent" aria-hidden="true">// </span>{experience.certifications.title}</h3>
+        <ul role="list">
+          {
+            experience.certifications.items.map((cert) => (
+              <li>
+                {cert.name} · <strong>{cert.code}</strong> <span class="muted">· {cert.year}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="creds__block">
+        <h3 class="creds__title mono"><span class="accent" aria-hidden="true">// </span>{experience.education.title}</h3>
+        <ul role="list">
+          {
+            experience.education.items.map((edu) => (
+              <li>
+                {edu.degree}
+                <span class="creds__sub">
+                  {edu.school} · {edu.period}
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="creds__block">
+        <h3 class="creds__title mono"><span class="accent" aria-hidden="true">// </span>{experience.languages.title}</h3>
+        <ul role="list">{experience.languages.items.map((lang) => <li>{lang}</li>)}</ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .graph-root {
+    --graph-gutter: 2.75rem;
+    position: relative;
+  }
+
+  @media (min-width: 40rem) {
+    .graph-root {
+      --graph-gutter: 4rem;
+    }
+  }
+
+  .timeline {
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  /* ---- Graph mode (JS): gutter on the left, the inline commit rail hides ---- */
+
+  .graph-root.has-graph .timeline > li {
+    padding-left: var(--graph-gutter);
+  }
+
+  .graph-root.has-graph :global(.log__list) {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .graph-root.has-graph :global(.log__node) {
+    display: none;
+  }
+
+  .graph-root :global(.git-graph) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .graph-root :global(.git-graph path) {
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .graph-root :global(.git-graph .g-connector) {
+    stroke: var(--c-line-strong);
+    stroke-width: 1;
+  }
+
+  .graph-root :global(.git-graph .g-tail) {
+    stroke-dasharray: 2 6;
+  }
+
+  .graph-root :global(.git-graph circle) {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .graph-root :global(.git-graph .g-commit) {
+    fill: var(--c-bg);
+    stroke-width: 2;
+  }
+
+  .graph-root :global(.git-graph .g-flash) {
+    fill: var(--lane-pleno);
+    filter: blur(10px);
+    opacity: 0;
+  }
+
+  .graph-root :global(.git-flash) {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 14rem;
+    translate: 0 -50%;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(ellipse 60% 50% at 10% 50%, rgb(0 181 181 / 0.22), transparent 70%);
+    mix-blend-mode: screen;
+  }
+
+  .creds {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--space-6);
+    margin-top: var(--space-7);
+  }
+
+  .creds__block {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+  }
+
+  .creds__title {
+    font-size: var(--fs-sm);
+    font-weight: 400;
+    color: var(--c-muted);
+  }
+
+  .creds__block ul {
+    display: grid;
+    gap: var(--space-2);
+    color: var(--c-fg-soft);
+  }
+
+  .creds__block strong {
+    color: var(--c-fg);
+    font-weight: 600;
+  }
+
+  .creds__sub {
+    display: block;
+    font-size: var(--fs-sm);
+    color: var(--c-muted);
+  }
+</style>

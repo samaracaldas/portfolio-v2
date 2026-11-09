@@ -1,0 +1,188 @@
+---
+import CaseStudy from './CaseStudy.astro';
+import ProjectVisual from './ProjectVisual.astro';
+import type { Project } from '@/content/shared/projects';
+import type { ProjectsDict, ProjectText } from '@/i18n';
+
+interface Props {
+  project: Project;
+  text: ProjectText;
+  labels: ProjectsDict['labels'];
+  index: number;
+}
+
+const { project, text, labels, index } = Astro.props;
+const titleId = `project-${project.id}`;
+const detailsId = `project-${project.id}-details`;
+const caseId = `project-${project.id}-case`;
+---
+
+<article class="card" aria-labelledby={titleId} data-project={project.id}>
+  <ProjectVisual project={project} alt={text.visualAlt} status={labels.status} />
+
+  <div class="card__body">
+    <div class="card__head">
+      <p class="card__index mono" aria-hidden="true">{String(index + 1).padStart(2, '0')}</p>
+      <!-- Revealed by projects.client.ts; without JS every card is already fully expanded. -->
+      <button
+        class="card__toggle"
+        type="button"
+        hidden
+        aria-expanded="false"
+        aria-controls={`${detailsId} ${caseId}`}
+        data-project-toggle
+        data-label-open={`${labels.expand} ${project.name}`}
+        data-label-close={labels.close}
+        aria-label={`${labels.expand} ${project.name}`}
+      >
+        <span class="card__toggle-icon" aria-hidden="true"></span>
+      </button>
+    </div>
+    <h3 class="card__title" id={titleId}>{project.name}</h3>
+    <p class="card__summary">{text.summary}</p>
+
+    <div class="card__details" id={detailsId} data-project-details>
+      <p class="card__description">{text.description}</p>
+    </div>
+
+    <p class="visually-hidden">{labels.stack}:</p>
+    <ul class="card__stack" role="list">
+      {project.stack.map((tech) => <li class="chip">{tech}</li>)}
+    </ul>
+
+    <p class="card__links">
+      <a class="text-link" href={project.live} target="_blank" rel="noopener">
+        {labels.live}<span class="visually-hidden"> {project.name} ({labels.opensInNewTab})</span>
+      </a>
+      <a class="text-link" href={project.repo} target="_blank" rel="noopener">
+        {labels.code}<span class="visually-hidden"> {project.name} ({labels.opensInNewTab})</span>
+      </a>
+    </p>
+  </div>
+
+  <!-- Full width under visual + body when the card is expanded. -->
+  <div class="card__case" id={caseId} data-project-details>
+    <CaseStudy study={text.caseStudy} labels={labels.caseStudy} />
+  </div>
+</article>
+
+<style>
+  .card {
+    display: grid;
+    gap: var(--space-5);
+    padding: var(--space-3);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-lg);
+    background: var(--c-bg-raised);
+    transition: border-color var(--dur) var(--ease-out);
+  }
+
+  .card:hover,
+  .card:focus-within {
+    border-color: var(--c-line-strong);
+  }
+
+  /* Expanded (set by projects.client.ts): spans the grid, side-by-side on wide screens. */
+  @media (min-width: 60rem) {
+    .card:global(.is-expanded) {
+      grid-template-columns: 1.5fr 1fr;
+      align-items: center;
+      gap: var(--space-7);
+    }
+  }
+
+  .card__body {
+    display: grid;
+    gap: var(--space-3);
+    padding: 0 var(--space-3) var(--space-3);
+  }
+
+  .card__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card__index {
+    font-size: var(--fs-xs);
+    color: var(--c-faint);
+  }
+
+  .card__toggle {
+    position: relative;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--c-line-strong);
+    border-radius: 50%;
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      transform var(--dur) var(--ease-out);
+  }
+
+  .card__toggle:hover {
+    border-color: var(--c-accent);
+  }
+
+  /* Plus that turns into a cross. */
+  .card__toggle-icon::before,
+  .card__toggle-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.75rem;
+    height: 1.5px;
+    background: var(--c-fg);
+    translate: -50% -50%;
+  }
+
+  .card__toggle-icon::after {
+    rotate: 90deg;
+  }
+
+  .card__toggle[aria-expanded='true'] {
+    transform: rotate(45deg);
+  }
+
+  .card__title {
+    font-size: var(--fs-lg);
+    font-weight: 650;
+    letter-spacing: -0.03em;
+    line-height: var(--lh-snug);
+  }
+
+  .card:global(.is-expanded) .card__title {
+    font-size: var(--fs-xl);
+  }
+
+  .card__summary {
+    color: var(--c-fg-soft);
+  }
+
+  .card__description {
+    color: var(--c-muted);
+    font-size: var(--fs-sm);
+  }
+
+  /* Collapsed state only exists once JS is in charge of toggling. */
+  .card:global(.is-collapsible):not(:global(.is-expanded)) .card__details,
+  .card:global(.is-collapsible):not(:global(.is-expanded)) .card__case {
+    display: none;
+  }
+
+  .card__case {
+    grid-column: 1 / -1;
+  }
+
+  .card__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .card__links {
+    display: flex;
+    gap: var(--space-5);
+    margin-top: var(--space-2);
+  }
+</style>
