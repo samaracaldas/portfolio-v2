@@ -3,14 +3,13 @@ import { initLangSwitch, restoreScroll } from './lang-switch';
 import { mountWhenNear } from './lazy';
 import { startSmoothScroll } from './lenis';
 import { createScope, onPageTeardown, type Scope } from './lifecycle';
-import { runPreloader, skipPreloader } from './preloader';
 import { getMotionPrefs, onReducedMotionChange, type MotionPrefs } from './prefers';
 import { initReveals } from './reveal';
 
 export { getMotionPrefs, type MotionPrefs } from './prefers';
 
 let current: Scope | null = null;
-let preloaderStarted = false;
+let restored = false;
 
 function start(prefs: MotionPrefs): Scope {
   const scope = createScope();
@@ -42,12 +41,9 @@ export function boot(): void {
   const prefs = getMotionPrefs();
   current = start(prefs);
 
-  // Once per page load: the build-style preloader, then (after a language
-  // switch) jump back to where the visitor was.
-  if (!preloaderStarted) {
-    preloaderStarted = true;
-    if (prefs.tier === 'static') skipPreloader();
-    else void runPreloader();
+  // Once per page load: after a language switch, jump back to where the visitor was.
+  if (!restored) {
+    restored = true;
     restoreScroll();
   }
 

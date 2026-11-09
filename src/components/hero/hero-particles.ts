@@ -6,7 +6,6 @@
 import { OrthographicCamera, Scene } from 'three/webgpu';
 import { gsap } from '@/lib/motion/gsap';
 import { createScope, listen, type Cleanup } from '@/lib/motion/lifecycle';
-import { preloaderDone } from '@/lib/motion/preloader';
 import { disposeTree } from '@/lib/webgl/dispose';
 import { createGlyphAtlas, GLYPHS } from '@/lib/webgl/glyph-atlas';
 import { createRenderer, forceWebGLFromUrl } from '@/lib/webgl/renderer';
@@ -121,11 +120,9 @@ export async function build({ hero, stage, config, playIntro, isDisposed }: Buil
   io.observe(hero);
   scope.add(() => io.disconnect());
 
-  /* ---- Fade in once the preloader is gone ---- */
+  /* ---- Fade in ---- */
   if (playIntro) {
-    void preloaderDone.then(() => {
-      if (!isDisposed()) gsap.to(u.fade, { value: 1, duration: 1.6, ease: 'power1.out', delay: 0.4 });
-    });
+    gsap.to(u.fade, { value: 1, duration: 1.6, ease: 'power1.out', delay: 0.2 });
   } else {
     u.fade.value = 1;
   }

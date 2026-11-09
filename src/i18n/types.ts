@@ -31,7 +31,6 @@ export interface SiteDict {
     otherLanguageName: string;
   };
   footer: { builtWith: string; sourceLabel: string };
-  preloader: { lines: string[]; done: string };
 }
 
 export interface HeroDict {

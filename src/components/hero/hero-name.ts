@@ -1,7 +1,6 @@
 import { SplitText } from 'gsap/SplitText';
 import { gsap } from '@/lib/motion/gsap';
 import { createScope, listen, type Cleanup } from '@/lib/motion/lifecycle';
-import { preloaderDone } from '@/lib/motion/preloader';
 
 gsap.registerPlugin(SplitText);
 
@@ -52,7 +51,7 @@ function createDecoder(chars: HTMLElement[]): Decoder {
     c.textContent = randomGlyph();
     c.style.color = heat ? 'var(--c-accent)' : 'var(--c-faint)';
   };
-  // Initial state (behind the preloader): pure code.
+  // Initial state: pure code.
   letters.forEach((c) => scramble(c, false));
 
   let lastSwap = 0;
@@ -183,7 +182,7 @@ export function mountHeroName(hero: HTMLElement, nameEl: HTMLElement): Cleanup {
   });
 
   // Coming back from a language switch: the name was already on screen, no intro.
-  const skipIntro = document.documentElement.classList.contains('skip-preloader');
+  const skipIntro = document.documentElement.classList.contains('skip-intro');
   let intro: Promise<void> = Promise.resolve();
   if (!skipIntro) {
     // Widths are measured per letter, so wait for the real font first.
@@ -191,7 +190,7 @@ export function mountHeroName(hero: HTMLElement, nameEl: HTMLElement): Cleanup {
       if (disposed) return undefined;
       const decoder = createDecoder(chars);
       scope.add(decoder.cleanup);
-      return preloaderDone.then(() => (disposed ? undefined : decoder.play()));
+      return disposed ? undefined : decoder.play();
     });
   }
 

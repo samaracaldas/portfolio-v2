@@ -1,7 +1,6 @@
 ---
 import '@/styles/global.css';
 import Grain from '@/components/global/Grain.astro';
-import Preloader from '@/components/global/Preloader.astro';
 import Header from '@/components/global/Header.astro';
 import Footer from '@/components/global/Footer.astro';
 import SkipLink from '@/components/global/SkipLink.astro';
@@ -29,9 +28,9 @@ const dict = getDictionary(locale);
       (function () {
         var root = document.documentElement;
         root.classList.add('js');
-        // Coming back from a language switch: no preloader, straight to the content.
         try {
-          if (sessionStorage.getItem('sc:restore')) root.classList.add('skip-preloader');
+          // Coming back from a language switch: no intro, straight to the content.
+          if (sessionStorage.getItem('sc:restore')) root.classList.add('skip-intro');
         } catch (e) {}
       })();
     </script>
@@ -44,7 +43,6 @@ const dict = getDictionary(locale);
     </main>
     <Footer site={dict.site} />
     <Grain />
-    <Preloader preloader={dict.site.preloader} />
     <script>
       import { boot } from '@/lib/motion';
       boot();

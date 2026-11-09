@@ -29,8 +29,4 @@ export const site: SiteDict = {
     builtWith: 'Built with Astro, Three.js and GSAP',
     sourceLabel: 'source',
   },
-  preloader: {
-    lines: ['> astro build', 'resolving dependencies', 'compiling components', 'bundling shaders', 'optimizing assets'],
-    done: 'build complete',
-  },
 };
