@@ -28,18 +28,20 @@ export const projects: ProjectsDict = {
         outcome: 'Live end to end: front end on Vercel, API on Render and database on MongoDB Atlas, with a mobile-first layout.',
       },
     },
-    'ice-land': {
-      summary: 'Landing page for an ice cream shop.',
+    bendita: {
+      summary: 'A bakery shop with real orders.',
       description:
-        'A landing page built for an ice cream shop, focused on visual appeal and a smooth experience. A fun exercise in turning a simple product into an inviting digital space.',
-      visualAlt: 'Pastel ice cream colours on a frosted surface',
+        'An online shop for a fictional bakery in Vila Madalena, São Paulo: a showcase with live daily stock, a build-your-own doughnut, a doughnut + coffee combo, party orders and order tracking. Every order reaches the counter dashboard in real time.',
+      visualAlt: 'Bendita home page: “Sonho recheado na hora, do jeito que você pedir”, with photos of doughnuts, cake jars and cheese bread',
       caseStudy: {
-        challenge: 'Turn a simple product, ice cream, into a page that makes you want to order.',
+        challenge:
+          'Go beyond a landing page: a shop where the order really reaches the counter, never sells what has run out and never trusts a price sent by the browser.',
         approach:
-          'A responsive landing page with hero, menu and testimonials, a mobile menu, a header that gains a shadow on scroll and highlights the active section, and entrance animations with ScrollReveal.',
+          'Astro and TypeScript with no UI framework, Supabase (Postgres, Auth and Realtime) and a counter dashboard with live orders, party orders and stock. A visitor button opens the dashboard in read-only mode.',
         decision:
-          'Plain HTML, CSS and JavaScript, with CSS split per section (header, home, menu, testimonials, footer) to keep the code organised without a framework.',
-        outcome: 'A light static page with no build step, deployed on Vercel.',
+          'The rules live in the database: PL/pgSQL functions recalculate prices and discounts and reserve stock in a locked transaction, with RLS on every table, abuse limits and tracking links with random tokens. The shop talks to the database with plain fetch, and supabase-js only loads on the dashboard.',
+        outcome:
+          '86 unit and database tests (PGlite) and 29 end-to-end scenarios on desktop and mobile with Playwright, CI on GitHub Actions, tested security headers and deployment on Vercel.',
       },
     },
     'the-dive': {
@@ -54,19 +56,6 @@ export const projects: ProjectsDict = {
         decision:
           'I wrote my own Angular scroll-reveal directive for the entrance animations, reused across components instead of an external script.',
         outcome: 'A componentised, responsive structure ready to grow into a full blog, deployed on Vercel.',
-      },
-    },
-    'the-bake': {
-      summary: 'Landing page for a fictional bakery.',
-      description:
-        'A landing page for a fictional bakery: warm tones, a cozy feel and a layout that makes you almost smell the bread. Translating a physical experience into a digital one.',
-      visualAlt: 'Warm golden tones like bread fresh out of the oven',
-      caseStudy: {
-        challenge: 'Translate the warmth of an artisan bakery into a digital experience.',
-        approach:
-          'An Angular 17 landing page with eight sections (hero, our story, recipes, menu, how to order, news, reservations and footer), a hamburger menu on mobile and smooth scrolling.',
-        decision: 'SCSS for the warm tones and typography (Google Fonts), FontAwesome for icons and ScrollReveal for entrance animations.',
-        outcome: 'A responsive layout for mobile and desktop, deployed on Vercel.',
       },
     },
   },

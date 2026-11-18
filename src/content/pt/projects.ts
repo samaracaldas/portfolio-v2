@@ -28,18 +28,20 @@ export const projects: ProjectsDict = {
         outcome: 'Aplicação no ar ponta a ponta: front na Vercel, API no Render e banco no MongoDB Atlas, com layout mobile-first.',
       },
     },
-    'ice-land': {
-      summary: 'Landing page de sorveteria.',
+    bendita: {
+      summary: 'Loja de doceria com pedidos de verdade.',
       description:
-        'Landing page para uma sorveteria, com foco no apelo visual e numa experiência fluida. Um exercício divertido de transformar um produto simples em um espaço digital convidativo.',
-      visualAlt: 'Cores pastel de sorvete sobre uma superfície congelada',
+        'Loja de uma doceria e padaria fictícia da Vila Madalena: vitrine com estoque do dia, montador de sonho, combo sonho + café, encomendas de festa e acompanhamento do pedido. Cada pedido chega ao painel do balcão em tempo real.',
+      visualAlt: 'Página inicial da Bendita: “Sonho recheado na hora, do jeito que você pedir”, com fotos de sonho, bolo de pote e pão de queijo',
       caseStudy: {
-        challenge: 'Transformar um produto simples, sorvete, numa página que dá vontade de pedir.',
+        challenge:
+          'Ir além de uma landing page: uma loja em que o pedido chega de verdade ao balcão, sem vender o que já acabou e sem confiar no preço que vem do navegador.',
         approach:
-          'Landing page responsiva com hero, cardápio e depoimentos, menu mobile, header que ganha sombra no scroll e destaca a seção ativa, e animações de entrada com ScrollReveal.',
+          'Astro e TypeScript sem framework de UI, Supabase (Postgres, Auth e Realtime) e um painel do balcão com pedidos, encomendas e estoque ao vivo. Um botão de visitante abre o painel em modo somente leitura.',
         decision:
-          'HTML, CSS e JavaScript puros, com o CSS separado por seção (header, home, cardápio, depoimentos, rodapé) para manter o código organizado sem framework.',
-        outcome: 'Página estática, leve e sem etapa de build, publicada na Vercel.',
+          'As regras ficam no banco: funções em PL/pgSQL recalculam preço e desconto e reservam o estoque numa transação com trava, com RLS em todas as tabelas, limites contra abuso e link de acompanhamento com token aleatório. A loja fala com o banco por fetch, e o supabase-js só carrega no painel.',
+        outcome:
+          '86 testes unitários e do banco (PGlite) e 29 cenários ponta a ponta em desktop e celular com Playwright, CI no GitHub Actions, cabeçalhos de segurança testados e deploy na Vercel.',
       },
     },
     'the-dive': {
@@ -54,19 +56,6 @@ export const projects: ProjectsDict = {
         decision:
           'Criei uma diretiva Angular própria de scroll reveal para as animações de entrada, reaproveitada entre os componentes em vez de um script externo.',
         outcome: 'Estrutura componentizada e responsiva, pronta para crescer para um blog completo, publicada na Vercel.',
-      },
-    },
-    'the-bake': {
-      summary: 'Landing page de padaria fictícia.',
-      description:
-        'Landing page para uma padaria fictícia: tons quentes, clima aconchegante e um layout que quase deixa sentir o cheiro do pão. Traduzir uma experiência física para o digital.',
-      visualAlt: 'Tons dourados e quentes como pão saindo do forno',
-      caseStudy: {
-        challenge: 'Traduzir o aconchego de uma padaria artesanal para uma experiência digital.',
-        approach:
-          'Landing page em Angular 17 com oito seções (hero, nossa história, receitas, menu, como pedir, novidades, reservas e rodapé), menu hambúrguer no mobile e scroll suave.',
-        decision: 'SCSS para os tons quentes e a tipografia (Google Fonts), FontAwesome nos ícones e ScrollReveal nas animações de entrada.',
-        outcome: 'Layout responsivo para mobile e desktop, publicado na Vercel.',
       },
     },
   },

@@ -1,7 +1,6 @@
 import type { ImageMetadata } from 'astro';
 import financeflow from '@/assets/projects/financeflow.jpg';
-import iceLand from '@/assets/projects/ice-land.jpg';
-import theBake from '@/assets/projects/the-bake.jpg';
+import bendita from '@/assets/projects/bendita.jpg';
 import theDive from '@/assets/projects/the-dive.jpg';
 import type { ProjectId } from './projects';
 
@@ -12,7 +11,6 @@ import type { ProjectId } from './projects';
  */
 export const PROJECT_IMAGES: Record<ProjectId, ImageMetadata> = {
   financeflow,
-  'ice-land': iceLand,
+  bendita,
   'the-dive': theDive,
-  'the-bake': theBake,
 };

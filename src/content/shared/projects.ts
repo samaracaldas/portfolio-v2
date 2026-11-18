@@ -1,4 +1,4 @@
-export const PROJECT_IDS = ['financeflow', 'ice-land', 'the-dive', 'the-bake'] as const;
+export const PROJECT_IDS = ['financeflow', 'bendita', 'the-dive'] as const;
 export type ProjectId = (typeof PROJECT_IDS)[number];
 
 export interface Project {
@@ -18,11 +18,11 @@ export const PROJECTS: readonly Project[] = [
     repo: 'https://github.com/samaracaldas/financeflow',
   },
   {
-    id: 'ice-land',
-    name: 'Ice Land',
-    stack: ['HTML', 'CSS', 'JavaScript'],
-    live: 'https://ice-land.vercel.app/',
-    repo: 'https://github.com/samaracaldas/ice-land',
+    id: 'bendita',
+    name: 'Bendita',
+    stack: ['Astro', 'TypeScript', 'Supabase', 'PostgreSQL', 'Playwright'],
+    live: 'https://bendita-samaracaldas.vercel.app/',
+    repo: 'https://github.com/samaracaldas/bendita',
   },
   {
     id: 'the-dive',
@@ -30,12 +30,5 @@ export const PROJECTS: readonly Project[] = [
     stack: ['Angular', 'TypeScript', 'SCSS'],
     live: 'https://divers-angular.vercel.app/',
     repo: 'https://github.com/samaracaldas/divers-angular',
-  },
-  {
-    id: 'the-bake',
-    name: 'The Bake',
-    stack: ['Angular', 'TypeScript', 'SCSS'],
-    live: 'https://the-bake-angular.vercel.app/',
-    repo: 'https://github.com/samaracaldas/the-bake-angular',
   },
 ];
