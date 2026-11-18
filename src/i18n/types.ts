@@ -62,6 +62,8 @@ export interface ProjectsDict extends SectionHeading {
   labels: {
     live: string;
     code: string;
+    /** Link to a project's demo area (e.g. a dashboard with visitor access). */
+    demo: string;
     stack: string;
     expand: string;
     close: string;

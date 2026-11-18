@@ -6,6 +6,7 @@ export const projects: ProjectsDict = {
   labels: {
     live: 'live',
     code: 'code',
+    demo: 'dashboard (sign in as visitor)',
     stack: 'Stack',
     expand: 'More about',
     close: 'Close',

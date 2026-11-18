@@ -6,6 +6,7 @@ export const projects: ProjectsDict = {
   labels: {
     live: 'site',
     code: 'código',
+    demo: 'painel (entre como visitante)',
     stack: 'Stack',
     expand: 'Mais sobre',
     close: 'Fechar',

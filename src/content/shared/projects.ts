@@ -7,6 +7,8 @@ export interface Project {
   stack: string[];
   live: string;
   repo: string;
+  /** Extra area worth opening on its own, e.g. a dashboard with a visitor login. */
+  demo?: string;
 }
 
 export const PROJECTS: readonly Project[] = [
@@ -23,6 +25,7 @@ export const PROJECTS: readonly Project[] = [
     stack: ['Astro', 'TypeScript', 'Supabase', 'PostgreSQL', 'Playwright'],
     live: 'https://bendita-samaracaldas.vercel.app/',
     repo: 'https://github.com/samaracaldas/bendita',
+    demo: 'https://bendita-samaracaldas.vercel.app/balcao',
   },
   {
     id: 'the-dive',
