@@ -1,5 +1,5 @@
 import type { ImageMetadata } from 'astro';
-import financeflow from '@/assets/projects/financeflow.jpg';
+import caramelo from '@/assets/projects/caramelo.jpg';
 import bendita from '@/assets/projects/bendita.jpg';
 import theDive from '@/assets/projects/the-dive.jpg';
 import type { ProjectId } from './projects';
@@ -10,7 +10,7 @@ import type { ProjectId } from './projects';
  * Replace with higher-resolution captures any time; keep the 16:10 ratio.
  */
 export const PROJECT_IMAGES: Record<ProjectId, ImageMetadata> = {
-  financeflow,
+  caramelo,
   bendita,
   'the-dive': theDive,
 };

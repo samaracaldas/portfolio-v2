@@ -15,18 +15,19 @@ export const projects: ProjectsDict = {
     opensInNewTab: 'opens in a new tab',
   },
   items: {
-    financeflow: {
-      summary: 'Financial management for small businesses.',
+    caramelo: {
+      summary: 'Money management for small businesses.',
       description:
-        'Full-stack financial management app for small businesses. Covers authentication, expense tracking, budget management and interactive dashboards with charts and data export.',
-      visualAlt: 'FinanceFlow sign-in screen: simple financial management for small businesses',
+        "A small business's income, expenses and accounts in one place: balance over time with a 30-day forecast, recurring bills with due dates, savings envelopes for goals, clients who stopped buying, a read-only link for the accountant and AI receipt reading.",
+      visualAlt: "Caramelo dashboard: cash balance with a forecast line, accounts and upcoming bills for a bakery",
       caseStudy: {
-        challenge: 'Small businesses need to track income, expenses and cash flow without the weight of an ERP.',
+        challenge:
+          'Rebuild FinanceFlow, my earlier project, which took 30 to 60 seconds to sign in: the API on Render went to sleep and the Atlas database paused.',
         approach:
-          'A REST API in Node.js, Express and Mongoose, and a Next.js (App Router) front end with a KPI dashboard, cash-flow chart (Recharts), filterable transactions, accounts, categories and reports with CSV export.',
+          'Next.js with the API in its own route handlers (no separate server to wake up), Neon Postgres with Drizzle and a new visual identity. Due dates are computed from rules on the fly, with no scheduled job, and the balance forecast combines recurring bills and savings envelopes.',
         decision:
-          'JWT in an httpOnly cookie instead of localStorage, to guard against XSS, with credentialed CORS between Vercel and Render. Zod validation on every endpoint and Mongoose populate to avoid N+1 queries.',
-        outcome: 'Live end to end: front end on Vercel, API on Render and database on MongoDB Atlas, with a mobile-first layout.',
+          "Neon's HTTP driver, built for serverless, with functions and database in the same region (São Paulo). In development, PGlite: the same Postgres in WASM, nothing to install. The accountant link stores only a hash of its token, and receipt reading uses Claude structured output, checked again on the server.",
+        outcome: 'Sign-in went from 30 to 60 seconds down to about 0.15 s. Live on Vercel with automatic deploys on every push, and a demo account for a bakery.',
       },
     },
     bendita: {

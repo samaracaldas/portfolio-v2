@@ -1,4 +1,4 @@
-export const PROJECT_IDS = ['financeflow', 'bendita', 'the-dive'] as const;
+export const PROJECT_IDS = ['caramelo', 'bendita', 'the-dive'] as const;
 export type ProjectId = (typeof PROJECT_IDS)[number];
 
 export interface Project {
@@ -13,11 +13,12 @@ export interface Project {
 
 export const PROJECTS: readonly Project[] = [
   {
-    id: 'financeflow',
-    name: 'FinanceFlow',
-    stack: ['Next.js', 'Node.js', 'TypeScript', 'MongoDB'],
-    live: 'https://financesflow.vercel.app/',
-    repo: 'https://github.com/samaracaldas/financeflow',
+    id: 'caramelo',
+    name: 'Caramelo',
+    stack: ['Next.js', 'TypeScript', 'Neon Postgres', 'Drizzle', 'Claude API'],
+    live: 'https://caramelo-khaki.vercel.app/',
+    repo: 'https://github.com/samaracaldas/caramelo',
+    demo: 'https://caramelo-khaki.vercel.app/login',
   },
   {
     id: 'bendita',

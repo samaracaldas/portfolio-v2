@@ -15,18 +15,19 @@ export const projects: ProjectsDict = {
     opensInNewTab: 'abre em nova aba',
   },
   items: {
-    financeflow: {
-      summary: 'Gestão financeira para pequenas empresas.',
+    caramelo: {
+      summary: 'Controle financeiro para pequenos negócios.',
       description:
-        'Aplicação full-stack de gestão financeira para pequenas empresas. Inclui autenticação, controle de despesas, gestão de orçamento e dashboards interativos com gráficos e exportação de dados.',
-      visualAlt: 'Tela de login do FinanceFlow: gestão financeira simples para pequenas empresas',
+        'Entradas, saídas e contas de um pequeno negócio num lugar só: saldo ao longo do tempo com previsão de 30 dias, contas recorrentes com vencimentos, caixinhas para metas, clientes que sumiram, link de leitura para o contador e leitura de comprovante com IA.',
+      visualAlt: 'Painel do Caramelo: saldo em caixa com linha de previsão, contas e próximos vencimentos de uma confeitaria',
       caseStudy: {
-        challenge: 'Pequenas empresas precisam controlar entradas, saídas e fluxo de caixa sem a complexidade de um ERP.',
+        challenge:
+          'Reconstruir o FinanceFlow, meu projeto anterior, que levava de 30 a 60 segundos para logar: a API no Render dormia e o banco no Atlas pausava.',
         approach:
-          'API REST em Node.js, Express e Mongoose, e front em Next.js (App Router) com dashboard de KPIs, gráfico de fluxo de caixa (Recharts), transações com filtros, contas, categorias e relatórios com exportação CSV.',
+          'Next.js com a API nas próprias rotas (sem servidor separado para acordar), Neon Postgres com Drizzle e identidade visual nova. Os vencimentos saem de regras calculadas na hora, sem tarefa agendada, e a previsão de saldo cruza recorrências e caixinhas.',
         decision:
-          'JWT em cookie httpOnly em vez de localStorage, para proteger contra XSS, com CORS com credenciais entre Vercel e Render. Validação com Zod em todos os endpoints e populate do Mongoose para evitar consultas N+1.',
-        outcome: 'Aplicação no ar ponta a ponta: front na Vercel, API no Render e banco no MongoDB Atlas, com layout mobile-first.',
+          'Driver HTTP do Neon, feito para serverless, com funções e banco na mesma região (São Paulo). Em desenvolvimento, PGlite: o mesmo Postgres em WASM, sem instalar nada. Link do contador guarda só o hash do token, e a leitura de comprovante usa saída estruturada do Claude, conferida no servidor.',
+        outcome: 'Login caiu de 30 a 60 segundos para cerca de 0,15 s. No ar na Vercel com deploy automático a cada push, com conta de demonstração de uma confeitaria.',
       },
     },
     bendita: {
