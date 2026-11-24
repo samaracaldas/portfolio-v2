@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://samaracaldas.vercel.app/sitemap-index.xml
+Sitemap: https://ssamaracaldass.vercel.app/sitemap-index.xml

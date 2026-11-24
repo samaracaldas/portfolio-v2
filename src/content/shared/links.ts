@@ -1,5 +1,5 @@
 /** Final production URL. Update once the new site's domain is decided. */
-export const SITE_URL = 'https://samaracaldas.vercel.app';
+export const SITE_URL = 'https://ssamaracaldass.vercel.app';
 
 export const PERSON = {
   name: 'Samara Caldas',
